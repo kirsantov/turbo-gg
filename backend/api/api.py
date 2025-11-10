@@ -2,10 +2,12 @@ from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from .serializers import (
+    UserAdminSerializer,
+    UserAdminUpdateSerializer,
     UserChangePasswordErrorSerializer,
     UserChangePasswordSerializer,
     UserCreateErrorSerializer,
@@ -99,3 +101,59 @@ class UserViewSet(
     def delete_account(self, request, *args, **kwargs):
         self.request.user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserAdminViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for admin panel to manage all users.
+    Only accessible by staff/admin users.
+    """
+
+    queryset = User.objects.all().order_by("-date_joined")
+    serializer_class = UserAdminSerializer
+    permission_classes = [IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action in ["update", "partial_update"]:
+            return UserAdminUpdateSerializer
+        return UserAdminSerializer
+
+    @extend_schema(
+        responses={
+            200: UserAdminSerializer(many=True),
+        }
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        responses={
+            200: UserAdminSerializer,
+        }
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        responses={
+            200: UserAdminSerializer,
+        }
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @extend_schema(
+        responses={
+            200: UserAdminSerializer,
+        }
+    )
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
+
+    @extend_schema(
+        responses={
+            204: None,
+        }
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)

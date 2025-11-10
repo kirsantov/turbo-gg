@@ -121,3 +121,41 @@ class UserCreateErrorSerializer(serializers.Serializer):
     password_retype = serializers.ListSerializer(
         child=serializers.CharField(), required=False
     )
+
+
+class UserAdminSerializer(serializers.ModelSerializer):
+    """Serializer for admin panel with all user fields"""
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "date_joined",
+            "last_login",
+            "created_at",
+            "modified_at",
+        ]
+        read_only_fields = ["id", "date_joined", "last_login", "created_at", "modified_at"]
+
+
+class UserAdminUpdateSerializer(serializers.ModelSerializer):
+    """Serializer for updating users in admin panel"""
+
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+        ]

@@ -4,10 +4,11 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .api import UserViewSet
+from .api import UserAdminViewSet, UserViewSet
 
 router = routers.DefaultRouter()
 router.register("users", UserViewSet, basename="api-users")
+router.register("admin/users", UserAdminViewSet, basename="api-admin-users")
 
 urlpatterns = [
     path(
