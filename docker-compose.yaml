@@ -1,10 +1,10 @@
 services:
   db:
-    image: postgres
+    image: postgres:16
     expose:
       - "5432"
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - ./data:/var/lib/postgresql/data
     environment:
@@ -22,7 +22,7 @@ services:
     expose:
       - "8000"
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./backend:/app
     env_file:
@@ -39,7 +39,7 @@ services:
     expose:
       - "3000"
     ports:
-      - "3000:3000"
+      - "3001:3000"
     env_file:
       - .env.frontend
     depends_on:
