@@ -8,7 +8,8 @@ import '@frontend/ui/styles/globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Turbo - Django & Next.js Bootstrap Template'
+  title: 'Invoice OCR Platform - AI-Powered Invoice Processing',
+  description: 'Automate invoice processing with advanced OCR technology. Extract structured data from scanned invoices using OlmOCR and Marker + DeepSeek R1.'
 }
 
 export default function RootLayout({
