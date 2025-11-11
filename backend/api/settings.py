@@ -76,12 +76,27 @@ TEMPLATES = [
 ######################################################################
 # Database
 ######################################################################
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# Database
+######################################################################
+# Use PostgreSQL for production, SQLite for local dev
+if environ.get("USE_SQLITE", "").lower() == "true":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": environ.get("DATABASE_NAME", "db"),
+            "USER": environ.get("DATABASE_USER", "postgres"),
+            "PASSWORD": environ.get("DATABASE_PASSWORD", "change-password"),
+            "HOST": environ.get("DATABASE_HOST", "localhost"),
+            "PORT": environ.get("DATABASE_PORT", "5432"),
+        }
+    }
 
 ######################################################################
 # Authentication
