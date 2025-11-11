@@ -79,7 +79,7 @@ def get_ocr_provider(provider_name: str) -> OCRProvider:
     """Factory to get OCR provider instance.
 
     Args:
-        provider_name: Provider identifier ('olmocr' or 'marker_deepseek_r1')
+        provider_name: Provider identifier ('ollama_local', 'olmocr', or 'marker_deepseek_r1')
 
     Returns:
         OCRProvider instance
@@ -88,9 +88,11 @@ def get_ocr_provider(provider_name: str) -> OCRProvider:
         ValueError: If provider_name is unknown
     """
     from .ocr_marker_deepseek import MarkerDeepseekProvider
+    from .ocr_ollama_local import OllamaLocalProvider
     from .ocr_olmocr import OlmOCRProvider
 
     providers = {
+        "ollama_local": OllamaLocalProvider,
         "olmocr": OlmOCRProvider,
         "marker_deepseek_r1": MarkerDeepseekProvider,
     }

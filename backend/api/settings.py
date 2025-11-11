@@ -214,8 +214,15 @@ UNFOLD = {
 # OCR Provider Settings
 ######################################################################
 OCR_PROVIDER = environ.get("OCR_PROVIDER", "olmocr")
+# Local Ollama OCR (recommended for local GPU)
+OLLAMA_URL = environ.get("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_MODEL = environ.get("OLLAMA_MODEL", "llama3.2-vision")
+
+# OlmOCR (self-hosted alternative)
 OLMOCR_API_URL = environ.get("OLMOCR_API_URL", "")
 OLMOCR_API_KEY = environ.get("OLMOCR_API_KEY", "")
+
+# Marker + DeepSeek R1 (cloud-based)
 MARKER_API_URL = environ.get("MARKER_API_URL", "")
 MARKER_API_KEY = environ.get("MARKER_API_KEY", "")
 DEEPSEEK_MODEL = environ.get("DEEPSEEK_MODEL", "r1")

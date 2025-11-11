@@ -27,6 +27,7 @@ class Invoice(models.Model):
     """Invoice model storing OCR-extracted invoice data."""
 
     PROVIDER_CHOICES = [
+        ("ollama_local", "Ollama Local (GPU)"),
         ("olmocr", "OlmOCR"),
         ("marker_deepseek_r1", "Marker + DeepSeek R1"),
     ]
