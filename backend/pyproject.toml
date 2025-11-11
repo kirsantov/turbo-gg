@@ -9,6 +9,11 @@ dependencies = [
     "djangorestframework-simplejwt>=5.3",
     "drf-spectacular>=0.28",
     "django-unfold>=0.43.0",
+    "django-filter>=24.3",
+    "pillow>=11.0",
+    "python-dotenv>=1.0",
+    "pydantic>=2.10",
+    "httpx>=0.28",
 ]
 
 [dependency-groups]

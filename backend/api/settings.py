@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "drf_spectacular",
+    "django_filters",
     "api",
+    "billing",
 ]
 
 ######################################################################
@@ -118,6 +120,12 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 ######################################################################
+# Media Files
+######################################################################
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+######################################################################
 # Rest Framework
 ######################################################################
 REST_FRAMEWORK = {
@@ -131,21 +139,55 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+}
+
+######################################################################
+# DRF Spectacular
+######################################################################
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Invoice OCR API",
+    "DESCRIPTION": "API for OCR-based invoice processing with olmOCR and Marker+DeepSeek",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 ######################################################################
 # Unfold
 ######################################################################
 UNFOLD = {
-    "SITE_HEADER": _("Turbo Admin"),
-    "SITE_TITLE": _("Turbo Admin"),
+    "SITE_HEADER": _("Invoice OCR Admin"),
+    "SITE_TITLE": _("Invoice OCR Admin"),
     "SIDEBAR": {
         "show_search": True,
         "show_all_applications": True,
         "navigation": [
             {
-                "title": _("Navigation"),
-                "separator": False,
+                "title": _("Billing"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Organizations"),
+                        "icon": "business",
+                        "link": reverse_lazy("admin:billing_organization_changelist"),
+                    },
+                    {
+                        "title": _("Invoices"),
+                        "icon": "receipt",
+                        "link": reverse_lazy("admin:billing_invoice_changelist"),
+                    },
+                    {
+                        "title": _("Line Items"),
+                        "icon": "list",
+                        "link": reverse_lazy("admin:billing_invoicelineitem_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": _("Administration"),
+                "separator": True,
                 "items": [
                     {
                         "title": _("Users"),
@@ -162,3 +204,13 @@ UNFOLD = {
         ],
     },
 }
+
+######################################################################
+# OCR Provider Settings
+######################################################################
+OCR_PROVIDER = environ.get("OCR_PROVIDER", "olmocr")
+OLMOCR_API_URL = environ.get("OLMOCR_API_URL", "")
+OLMOCR_API_KEY = environ.get("OLMOCR_API_KEY", "")
+MARKER_API_URL = environ.get("MARKER_API_URL", "")
+MARKER_API_KEY = environ.get("MARKER_API_KEY", "")
+DEEPSEEK_MODEL = environ.get("DEEPSEEK_MODEL", "r1")
