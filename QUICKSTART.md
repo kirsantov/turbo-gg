@@ -73,8 +73,21 @@ docker compose up --build
 2. **Regenerate types**: `docker compose exec web pnpm openapi:generate`
 3. **Use types in frontend** - they're automatically available in `@frontend/types`
 
+## 🤖 OCR Configuration
+
+By default, the system runs in **mock mode** (returns fake invoice data for testing).
+
+To use real OCR:
+- See **OCR_SETUP.md** for detailed setup instructions
+- Quick options:
+  - **OlmOCR**: Self-hosted, free, good accuracy (requires GPU)
+  - **Marker + DeepSeek R1**: Cloud-based, ~$0.01/invoice, very accurate
+
+Current status: **Mock mode** (no API keys configured)
+
 ## 📚 More Info
 
+- See **OCR_SETUP.md** for OCR provider configuration
 - See **CLAUDE.md** for complete architecture documentation
 - See **README.md** for detailed feature list
 - Raise issues at: https://github.com/unfoldadmin/turbo/issues
