@@ -77,13 +77,16 @@ docker compose up --build
 
 By default, the system runs in **mock mode** (returns fake invoice data for testing).
 
-To use real OCR:
-- See **OCR_SETUP.md** for detailed setup instructions
-- Quick options:
-  - **OlmOCR**: Self-hosted, free, good accuracy (requires GPU)
-  - **Marker + DeepSeek R1**: Cloud-based, ~$0.01/invoice, very accurate
+To use real OCR with your own GPU:
+- **See OLLAMA_SETUP.md** for quick local GPU setup (RECOMMENDED)
+- Already have Ollama? Just run: `ollama pull llama3.2-vision`
+- Select "Ollama Local (GPU)" in upload form
+- 100% FREE, 100% PRIVATE, no API keys needed!
 
-Current status: **Mock mode** (no API keys configured)
+Other options:
+- See **OCR_SETUP.md** for cloud providers (OlmOCR, Marker + DeepSeek R1)
+
+Current status: **Mock mode** (Ollama not detected)
 
 ## 📚 More Info
 
