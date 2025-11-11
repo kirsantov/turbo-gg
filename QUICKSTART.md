@@ -13,7 +13,8 @@ Wait for all services to start (30-60 seconds).
 - **Frontend**: http://localhost:3001
 - **Backend API**: http://localhost:8001
 - **Django Admin**: http://localhost:8001/admin/
-- **API Docs (Swagger)**: http://localhost:8001/api/schema/swagger-ui/
+- **API Docs (Swagger)**: http://localhost:8001/api/docs/
+- **API Schema**: http://localhost:8001/api/schema/
 
 ## 🔑 Login Credentials
 
