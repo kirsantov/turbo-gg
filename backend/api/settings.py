@@ -169,6 +169,11 @@ UNFOLD = {
                 "separator": True,
                 "items": [
                     {
+                        "title": _("Upload Invoice (OCR)"),
+                        "icon": "upload_file",
+                        "link": reverse_lazy("admin:billing_invoice_upload"),
+                    },
+                    {
                         "title": _("Organizations"),
                         "icon": "business",
                         "link": reverse_lazy("admin:billing_organization_changelist"),

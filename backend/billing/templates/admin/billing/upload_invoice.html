@@ -1,0 +1,250 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    .upload-form-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .form-group {
+        margin-bottom: 25px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+    .form-group input[type="file"],
+    .form-group select,
+    .form-group input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .form-group input[type="file"] {
+        padding: 8px;
+    }
+    .help-text {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+    }
+    .btn-upload {
+        background: #417690;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    .btn-upload:hover {
+        background: #2e5468;
+    }
+    .btn-upload:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+    .alert-success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+    .alert-error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+    .alert-info {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+    }
+    .result-container {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+    .result-container h3 {
+        margin-top: 0;
+        color: #333;
+    }
+    .result-field {
+        margin-bottom: 10px;
+    }
+    .result-field strong {
+        color: #555;
+    }
+    .processing {
+        text-align: center;
+        padding: 20px;
+    }
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #417690;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="upload-form-container">
+    <h1>{% trans "Upload Invoice for OCR Processing" %}</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" id="upload-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="file">{% trans "Invoice File" %} *</label>
+            <input type="file" name="file" id="file" accept=".pdf,.jpg,.jpeg,.png,.tiff,.tif" required>
+            <div class="help-text">
+                {% trans "Supported formats: PDF, JPEG, PNG, TIFF. Maximum size: 25 MB" %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{% trans "Organization" %} *</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="radio" name="org_type" value="existing" id="org-existing" checked>
+                <label for="org-existing" style="margin: 0;">{% trans "Select Existing" %}</label>
+
+                <input type="radio" name="org_type" value="new" id="org-new" style="margin-left: 20px;">
+                <label for="org-new" style="margin: 0;">{% trans "Create New" %}</label>
+            </div>
+        </div>
+
+        <div class="form-group" id="existing-org-group">
+            <label for="organization_id">{% trans "Select Organization" %}</label>
+            <select name="organization_id" id="organization_id">
+                <option value="">{% trans "-- Select Organization --" %}</option>
+                {% for org in organizations %}
+                <option value="{{ org.id }}">{{ org.name }}{% if org.tax_id %} ({{ org.tax_id }}){% endif %}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group" id="new-org-group" style="display: none;">
+            <label for="organization_name">{% trans "Organization Name" %}</label>
+            <input type="text" name="organization_name" id="organization_name" placeholder="{% trans 'Enter organization name' %}">
+        </div>
+
+        <div class="form-group">
+            <label for="provider">{% trans "OCR Provider" %}</label>
+            <select name="provider" id="provider">
+                <option value="olmocr" {% if current_provider == "olmocr" %}selected{% endif %}>OlmOCR</option>
+                <option value="marker_deepseek_r1" {% if current_provider == "marker_deepseek_r1" %}selected{% endif %}>Marker + DeepSeek R1</option>
+            </select>
+            <div class="help-text">
+                {% trans "Current default:" %} <strong>{{ current_provider }}</strong>
+            </div>
+        </div>
+
+        <div id="processing" class="processing" style="display: none;">
+            <div class="spinner"></div>
+            <p>{% trans "Processing invoice with OCR... This may take up to 30 seconds." %}</p>
+        </div>
+
+        <button type="submit" class="btn-upload" id="submit-btn">
+            {% trans "Upload and Process" %}
+        </button>
+    </form>
+
+    {% if result %}
+    <div class="result-container">
+        <h3>{% trans "OCR Result" %}</h3>
+        <div class="result-field">
+            <strong>{% trans "Invoice Number:" %}</strong> {{ result.number }}
+        </div>
+        <div class="result-field">
+            <strong>{% trans "Issue Date:" %}</strong> {{ result.issue_date }}
+        </div>
+        <div class="result-field">
+            <strong>{% trans "Supplier:" %}</strong> {{ result.supplier.name }}
+        </div>
+        <div class="result-field">
+            <strong>{% trans "Buyer:" %}</strong> {{ result.buyer.name }}
+        </div>
+        <div class="result-field">
+            <strong>{% trans "Total Amount:" %}</strong> {{ result.totals.total }} {{ result.currency }}
+        </div>
+        <div class="result-field">
+            <strong>{% trans "Provider:" %}</strong> {{ result.provider_metadata.name }}
+            ({% trans "Confidence:" %} {{ result.provider_metadata.confidence }})
+        </div>
+        <div style="margin-top: 20px;">
+            <a href="{% url 'admin:billing_invoice_change' result.invoice_id %}" class="btn-upload" style="display: inline-block; text-decoration: none;">
+                {% trans "View Invoice Details" %}
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const orgTypeRadios = document.querySelectorAll('input[name="org_type"]');
+    const existingOrgGroup = document.getElementById('existing-org-group');
+    const newOrgGroup = document.getElementById('new-org-group');
+    const orgSelect = document.getElementById('organization_id');
+    const orgNameInput = document.getElementById('organization_name');
+
+    orgTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'existing') {
+                existingOrgGroup.style.display = 'block';
+                newOrgGroup.style.display = 'none';
+                orgSelect.required = true;
+                orgNameInput.required = false;
+            } else {
+                existingOrgGroup.style.display = 'none';
+                newOrgGroup.style.display = 'block';
+                orgSelect.required = false;
+                orgNameInput.required = true;
+            }
+        });
+    });
+
+    const form = document.getElementById('upload-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const processing = document.getElementById('processing');
+
+    form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.textContent = '{% trans "Processing..." %}';
+        processing.style.display = 'block';
+    });
+});
+</script>
+{% endblock %}
