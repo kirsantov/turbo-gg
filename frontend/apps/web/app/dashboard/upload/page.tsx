@@ -10,7 +10,7 @@ export default function UploadPage() {
   const [organizationType, setOrganizationType] = useState<'existing' | 'new'>('new')
   const [organizationId, setOrganizationId] = useState<number | undefined>()
   const [organizationName, setOrganizationName] = useState('')
-  const [provider, setProvider] = useState('olmocr')
+  const [provider, setProvider] = useState('ollama_local')
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -348,6 +348,7 @@ export default function UploadPage() {
               onChange={(e) => setProvider(e.target.value)}
               disabled={loading}
             >
+              <option value="ollama_local">🚀 Ollama Local (GPU) - FREE!</option>
               <option value="olmocr">OlmOCR (Fast)</option>
               <option value="marker_deepseek_r1">Marker + DeepSeek R1 (Advanced AI)</option>
             </select>
