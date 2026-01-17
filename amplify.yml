@@ -11,8 +11,8 @@ applications:
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm install
         build:
           commands:
-            # Build runs from appRoot (frontend/apps/web)
-            - pnpm build
+            # Build using next directly
+            - npx next build
       artifacts:
         baseDirectory: .next
         files:
