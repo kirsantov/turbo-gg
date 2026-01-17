@@ -1,0 +1,27 @@
+version: 1
+applications:
+  - appRoot: frontend
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            # Enable corepack and install pnpm
+            - corepack enable
+            - corepack prepare pnpm@latest --activate
+            # Install all workspace dependencies
+            - pnpm install --frozen-lockfile
+        build:
+          commands:
+            # Build the Next.js web application
+            - pnpm --filter web build
+      artifacts:
+        baseDirectory: apps/web/.next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - apps/web/node_modules/**/*
+          - packages/types/node_modules/**/*
+          - packages/ui/node_modules/**/*
+          - ~/.cache/pnpm/**/*
