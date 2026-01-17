@@ -11,9 +11,10 @@ applications:
         build:
           commands:
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
-            # Create .next dir and copy static files into standalone for SSR
+            # Prepare standalone for Amplify SSR
             - mkdir -p $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next
             - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/static $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/static
+            - cp $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/*.json $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/
       artifacts:
         baseDirectory: .next/standalone
         files:
