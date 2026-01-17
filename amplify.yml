@@ -20,10 +20,11 @@ applications:
         baseDirectory: .next
         files:
           - '**/*'
+      buildPath: /
       cache:
         paths:
-          - ../../node_modules/**/*
           - node_modules/**/*
+          - ../../node_modules/**/*
           - ../../packages/types/node_modules/**/*
           - ../../packages/ui/node_modules/**/*
           - ~/.cache/pnpm/**/*
