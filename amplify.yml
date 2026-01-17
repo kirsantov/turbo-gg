@@ -8,11 +8,11 @@ applications:
             - corepack enable
             - corepack prepare pnpm@latest --activate
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm install
+            # Copy node_modules to appRoot so Amplify can find next
+            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/node_modules $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/node_modules
         build:
           commands:
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
-            # Copy node_modules to .next for Amplify SSR runtime
-            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/node_modules $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/node_modules
       artifacts:
         baseDirectory: .next
         files:
