@@ -7,16 +7,14 @@ applications:
           commands:
             - corepack enable
             - corepack prepare pnpm@latest --activate
-            # Install from frontend workspace root
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm install
         build:
           commands:
-            # Use pnpm from frontend root with filter
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
-            # Ensure .next is in appRoot for artifacts
-            - ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next || echo "checking .next location"
+            # Copy static files into standalone for SSR (from appRoot)
+            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/static $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/static
       artifacts:
-        baseDirectory: .next
+        baseDirectory: .next/standalone
         files:
           - '**/*'
       cache:
