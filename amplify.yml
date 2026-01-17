@@ -8,14 +8,12 @@ applications:
             # Enable corepack and install pnpm
             - corepack enable
             - corepack prepare pnpm@latest --activate
-            # Install all workspace dependencies from frontend root
-            - cd ../..
-            - pnpm install --frozen-lockfile
+            # Install all workspace dependencies using -C flag
+            - pnpm -C ../.. install --frozen-lockfile
         build:
           commands:
-            # Build from frontend workspace root
-            - cd ../..
-            - pnpm --filter web build
+            # Build the Next.js web application
+            - pnpm -C ../.. --filter web build
       artifacts:
         baseDirectory: .next
         files:
