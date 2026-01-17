@@ -14,7 +14,10 @@ applications:
             # Prepare standalone for Amplify SSR
             - mkdir -p $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next
             - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/static $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/static
+            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/server $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/server
             - cp $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/*.json $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/
+            # Also copy to root of standalone for Amplify
+            - cp $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/required-server-files.json $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/
       artifacts:
         baseDirectory: .next/standalone
         files:
