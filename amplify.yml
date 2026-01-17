@@ -11,8 +11,10 @@ applications:
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm install
         build:
           commands:
-            # Build using next directly
-            - npx next build
+            # Use pnpm from frontend root with filter
+            - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
+            # Ensure .next is in appRoot for artifacts
+            - ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next || echo "checking .next location"
       artifacts:
         baseDirectory: .next
         files:
