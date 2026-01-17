@@ -11,14 +11,19 @@ applications:
         build:
           commands:
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
-            # Copy hoisted node_modules from frontend root to appRoot for artifacts
-            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/node_modules $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/node_modules
+            # Flatten monorepo standalone structure for Amplify
+            # Move app files from nested path to standalone root
+            - mv $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/frontend/apps/web/* $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/
+            # Move node_modules from nested path to standalone root
+            - mv $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/frontend/node_modules $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/
+            # Remove empty frontend directory
+            - rm -rf $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/frontend
+            # Copy static files
+            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/static $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/static
       artifacts:
-        baseDirectory: .
+        baseDirectory: .next/standalone
         files:
-          - .next/**/*
-          - node_modules/**/*
-          - package.json
+          - '**/*'
       cache:
         paths:
           - $CODEBUILD_SRC_DIR/turbo-gg/frontend/node_modules/**/*
