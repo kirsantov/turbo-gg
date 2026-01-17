@@ -9,16 +9,16 @@ applications:
             - corepack enable
             - corepack prepare pnpm@latest --activate
             # Install all workspace dependencies from frontend root
-            - cd $CODEBUILD_SRC_DIR/frontend && pnpm install
+            - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm install
         build:
           commands:
             # Build the Next.js web application
-            - cd $CODEBUILD_SRC_DIR/frontend && pnpm --filter web build
+            - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
       artifacts:
         baseDirectory: .next
         files:
           - '**/*'
       cache:
         paths:
-          - $CODEBUILD_SRC_DIR/frontend/node_modules/**/*
+          - $CODEBUILD_SRC_DIR/turbo-gg/frontend/node_modules/**/*
           - ~/.cache/pnpm/**/*
