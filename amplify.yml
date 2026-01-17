@@ -11,13 +11,11 @@ applications:
         build:
           commands:
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
-            # DEBUG - show current directory and structure
-            - echo "=== PWD ===" && pwd
-            - echo "=== CODEBUILD_SRC_DIR ===" && echo $CODEBUILD_SRC_DIR
-            - echo "=== .next contents ===" && ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/
-            - echo "=== .next/standalone contents ===" && ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/
-            - echo "=== .next/standalone/node_modules check ===" && ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/node_modules/ | head -20
-            - echo "=== looking for trace files ===" && find $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next -name "*.nft.json" | head -10
+            # DEBUG - explore standalone structure in monorepo
+            - echo "=== .next/standalone/frontend contents ===" && ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/frontend/ || echo "not found"
+            - echo "=== .next/standalone/frontend/apps contents ===" && ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/frontend/apps/ || echo "not found"
+            - echo "=== .next/standalone/frontend/apps/web contents ===" && ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/frontend/apps/web/ || echo "not found"
+            - echo "=== checking for node_modules in standalone ===" && find $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone -type d -name "node_modules" | head -5
       artifacts:
         baseDirectory: .next/standalone
         files:
