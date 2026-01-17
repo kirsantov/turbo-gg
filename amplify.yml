@@ -14,8 +14,12 @@ applications:
           commands:
             # Build the Next.js web application
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
+            # Copy static files to standalone directory for SSR
+            - cp -r .next/static .next/standalone/.next/static
+            # Copy public folder if exists
+            - cp -r public .next/standalone/public 2>/dev/null || true
       artifacts:
-        baseDirectory: .next
+        baseDirectory: .next/standalone
         files:
           - '**/*'
       cache:
