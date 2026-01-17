@@ -11,12 +11,10 @@ applications:
         build:
           commands:
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
-            # Copy static files to standalone .next
-            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/static $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/frontend/apps/web/.next/static
-            # Copy required-server-files.json to baseDirectory root (Amplify expects it there)
-            - cp $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/frontend/apps/web/.next/required-server-files.json $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/frontend/apps/web/
+            # Copy node_modules to .next for Amplify SSR runtime
+            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/node_modules $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/node_modules
       artifacts:
-        baseDirectory: .next/standalone/frontend/apps/web
+        baseDirectory: .next
         files:
           - '**/*'
       cache:
