@@ -11,13 +11,13 @@ applications:
         build:
           commands:
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
-            # Prepare standalone for Amplify SSR
-            - mkdir -p $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next
-            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/static $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/static
-            - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/server $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/server
-            - cp $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/*.json $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/
-            # Also copy to root of standalone for Amplify
-            - cp $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/required-server-files.json $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/
+            # DEBUG - show current directory and structure
+            - echo "=== PWD ===" && pwd
+            - echo "=== CODEBUILD_SRC_DIR ===" && echo $CODEBUILD_SRC_DIR
+            - echo "=== .next contents ===" && ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/
+            - echo "=== .next/standalone contents ===" && ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/
+            - echo "=== .next/standalone/node_modules check ===" && ls -la $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/node_modules/ | head -20
+            - echo "=== looking for trace files ===" && find $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next -name "*.nft.json" | head -10
       artifacts:
         baseDirectory: .next/standalone
         files:
