@@ -5,24 +5,19 @@ applications:
       phases:
         preBuild:
           commands:
-            # Enable corepack and install pnpm
             - corepack enable
             - corepack prepare pnpm@latest --activate
-            # Install all workspace dependencies from frontend root
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm install
         build:
           commands:
-            # Build the Next.js web application
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
-            # Copy static files to standalone directory for SSR
-            - cp -r .next/static .next/standalone/.next/static
-            # Copy public folder if exists
-            - cp -r public .next/standalone/public 2>/dev/null || true
       artifacts:
-        baseDirectory: .next/standalone
+        baseDirectory: .next
         files:
           - '**/*'
+      buildPath: /
       cache:
         paths:
           - $CODEBUILD_SRC_DIR/turbo-gg/frontend/node_modules/**/*
+          - $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/node_modules/**/*
           - ~/.cache/pnpm/**/*
