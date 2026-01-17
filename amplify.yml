@@ -7,17 +7,17 @@ applications:
           commands:
             - corepack enable
             - corepack prepare pnpm@latest --activate
+            # Install from frontend workspace root
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm install
         build:
           commands:
-            - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
+            # Build runs from appRoot (frontend/apps/web)
+            - pnpm build
       artifacts:
         baseDirectory: .next
         files:
           - '**/*'
-      buildPath: /
       cache:
         paths:
           - $CODEBUILD_SRC_DIR/turbo-gg/frontend/node_modules/**/*
-          - $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/node_modules/**/*
           - ~/.cache/pnpm/**/*
