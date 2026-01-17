@@ -11,7 +11,8 @@ applications:
         build:
           commands:
             - cd $CODEBUILD_SRC_DIR/turbo-gg/frontend && pnpm --filter web build
-            # Copy static files into standalone for SSR (from appRoot)
+            # Create .next dir and copy static files into standalone for SSR
+            - mkdir -p $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next
             - cp -r $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/static $CODEBUILD_SRC_DIR/turbo-gg/frontend/apps/web/.next/standalone/.next/static
       artifacts:
         baseDirectory: .next/standalone
